@@ -55,7 +55,7 @@ function getText(item, lang) {
 }
 
 function getImageUrl(folder, filename) {
-  return `/assets/${folder}/${filename}`
+  return `${import.meta.env.BASE_URL}assets/${folder}/${filename}`
 }
 
 function ImageCarousel({ title, images, folder }) {
