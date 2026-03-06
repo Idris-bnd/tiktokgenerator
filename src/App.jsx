@@ -58,6 +58,12 @@ function getImageUrl(folder, filename) {
   return `${import.meta.env.BASE_URL}assets/${folder}/${filename}`
 }
 
+function getTextPos() {
+  const textXOptions = [400, 300]
+  const textYOptions = [250, 500, 700]
+  return { textX: textXOptions[getRandomIndex(textXOptions)], textY: textYOptions[getRandomIndex(textYOptions)] }
+}
+
 function ImageCarousel({ title, images, folder }) {
   return (
     <div className="encart">
@@ -89,6 +95,40 @@ function MainApp() {
   const [generating, setGenerating] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [preview, setPreview] = useState(null)
+  const [genState, setGenState] = useState(null)
+
+  async function buildPreviewFromState(state) {
+    const photoUrl = getImageUrl('photos', state.photoFilename)
+    const lockscreenUrl = getImageUrl('lockscreen', state.lockscreenFilename)
+    const phrase1Fr = getText(PHRASES_IMAGE_1[state.idx1], 'fr')
+    const phrase1En = getText(PHRASES_IMAGE_1[state.idx1], 'en')
+    const phrase3Fr = getText(PHRASES_IMAGE_3[state.idx3], 'fr')
+    const phrase3En = getText(PHRASES_IMAGE_3[state.idx3], 'en')
+    const penseeFr = getText(PENSEES_POSITIVES[state.idxP], 'fr')
+    const penseeEn = getText(PENSEES_POSITIVES[state.idxP], 'en')
+    const textPos = state.textPos
+
+    const [image1Fr, image2Fr, image1En, image2En] = await Promise.all([
+      generateImageWithText(photoUrl, phrase1Fr, textPos),
+      generateLockscreenWithThought(lockscreenUrl, penseeFr),
+      generateImageWithText(photoUrl, phrase1En, textPos),
+      generateLockscreenWithThought(lockscreenUrl, penseeEn),
+    ])
+    const image3Fr = await generateZoomWithPhrase(image2Fr, phrase3Fr)
+    const image3En = await generateZoomWithPhrase(image2En, phrase3En)
+    return {
+      fr: { image1: image1Fr, image2: image2Fr, image3: image3Fr },
+      en: { image1: image1En, image2: image2En, image3: image3En },
+    }
+  }
+
+  const runPartialUpdate = async (updateState) => {
+    if (!genState || !preview) return
+    const newState = { ...genState, ...updateState }
+    setGenState(newState)
+    const result = await buildPreviewFromState(newState)
+    setPreview(result)
+  }
 
   const handleGenerate = async () => {
     if (PHOTOS.length === 0 || LOCKSCREENS.length === 0) {
@@ -107,38 +147,15 @@ function MainApp() {
       try {
         const photoFilename = PHOTOS[getRandomIndex(PHOTOS)]
         const lockscreenFilename = LOCKSCREENS[getRandomIndex(LOCKSCREENS)]
-        const photoUrl = getImageUrl('photos', photoFilename)
-        const lockscreenUrl = getImageUrl('lockscreen', lockscreenFilename)
-
         const idx1 = getRandomIndex(PHRASES_IMAGE_1)
         const idx3 = getRandomIndex(PHRASES_IMAGE_3)
         const idxP = getRandomIndex(PENSEES_POSITIVES)
+        const textPos = getTextPos()
 
-        const phrase1Fr = getText(PHRASES_IMAGE_1[idx1], 'fr')
-        const phrase1En = getText(PHRASES_IMAGE_1[idx1], 'en')
-        const phrase3Fr = getText(PHRASES_IMAGE_3[idx3], 'fr')
-        const phrase3En = getText(PHRASES_IMAGE_3[idx3], 'en')
-        const penseeFr = getText(PENSEES_POSITIVES[idxP], 'fr')
-        const penseeEn = getText(PENSEES_POSITIVES[idxP], 'en')
-
-        const textXOptions = [400, 300]
-        const textYOptions = [250, 500, 700]
-        const textPos = { textX: textXOptions[getRandomIndex(textXOptions)], textY: textYOptions[getRandomIndex(textYOptions)] }
-
-        const [image1Fr, image2Fr, image1En, image2En] = await Promise.all([
-          generateImageWithText(photoUrl, phrase1Fr, textPos),
-          generateLockscreenWithThought(lockscreenUrl, penseeFr),
-          generateImageWithText(photoUrl, phrase1En, textPos),
-          generateLockscreenWithThought(lockscreenUrl, penseeEn),
-        ])
-
-        const image3Fr = await generateZoomWithPhrase(image2Fr, phrase3Fr)
-        const image3En = await generateZoomWithPhrase(image2En, phrase3En)
-
-        setPreview({
-          fr: { image1: image1Fr, image2: image2Fr, image3: image3Fr },
-          en: { image1: image1En, image2: image2En, image3: image3En },
-        })
+        const state = { photoFilename, lockscreenFilename, idx1, idx3, idxP, textPos }
+        setGenState(state)
+        const result = await buildPreviewFromState(state)
+        setPreview(result)
         success = true
         break
       } catch (err) {
@@ -151,6 +168,66 @@ function MainApp() {
       alert('Erreur lors de la génération. Redémarre le serveur (npm run dev) si tu as ajouté/supprimé des images.')
     }
     setGenerating(false)
+  }
+
+  const handleChangeImage1 = async () => {
+    if (!genState) return
+    setGenerating(true)
+    try {
+      await runPartialUpdate({ photoFilename: PHOTOS[getRandomIndex(PHOTOS)] })
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  const handleChangeImages2And3 = async () => {
+    if (!genState) return
+    setGenerating(true)
+    try {
+      await runPartialUpdate({ lockscreenFilename: LOCKSCREENS[getRandomIndex(LOCKSCREENS)] })
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  const handleChangeText1 = async () => {
+    if (!genState) return
+    setGenerating(true)
+    try {
+      await runPartialUpdate({ idx1: getRandomIndex(PHRASES_IMAGE_1) })
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  const handleChangePensee23 = async () => {
+    if (!genState) return
+    setGenerating(true)
+    try {
+      await runPartialUpdate({ idxP: getRandomIndex(PENSEES_POSITIVES) })
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  const handleChangeText3 = async () => {
+    if (!genState) return
+    setGenerating(true)
+    try {
+      await runPartialUpdate({ idx3: getRandomIndex(PHRASES_IMAGE_3) })
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  const handleChangeTextPos1 = async () => {
+    if (!genState) return
+    setGenerating(true)
+    try {
+      await runPartialUpdate({ textPos: getTextPos() })
+    } finally {
+      setGenerating(false)
+    }
   }
 
   useEffect(() => {
@@ -237,6 +314,56 @@ function MainApp() {
           </button>
         )}
       </div>
+
+      {preview && (
+        <div className="modifier-buttons">
+          <h4 className="modifier-title">Modifier</h4>
+          <div className="modifier-grid">
+            <button
+              className="btn-modifier"
+              onClick={handleChangeImage1}
+              disabled={generating}
+            >
+              Image 1
+            </button>
+            <button
+              className="btn-modifier"
+              onClick={handleChangeImages2And3}
+              disabled={generating}
+            >
+              Images 2 & 3
+            </button>
+            <button
+              className="btn-modifier"
+              onClick={handleChangeText1}
+              disabled={generating}
+            >
+              Texte 1
+            </button>
+            <button
+              className="btn-modifier"
+              onClick={handleChangePensee23}
+              disabled={generating}
+            >
+              Pensée 2 & 3
+            </button>
+            <button
+              className="btn-modifier"
+              onClick={handleChangeText3}
+              disabled={generating}
+            >
+              Texte 3
+            </button>
+            <button
+              className="btn-modifier"
+              onClick={handleChangeTextPos1}
+              disabled={generating}
+            >
+              Emplacement texte 1
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

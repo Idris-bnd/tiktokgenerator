@@ -261,6 +261,19 @@
   }
 }
 
+/* Desktop: grille Modifier plus large */
+@media (min-width: 768px) {
+  .modifier-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .btn-modifier {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}
+
 /* Boutons */
 .app-buttons {
   position: fixed;
@@ -316,6 +329,52 @@
 
 .btn-download:disabled {
   opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Panneau Modifier */
+.modifier-buttons {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  background: var(--bg-card);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.modifier-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.modifier-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.btn-modifier {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.btn-modifier:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-modifier:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
