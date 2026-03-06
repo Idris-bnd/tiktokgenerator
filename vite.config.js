@@ -51,6 +51,7 @@ function assetListPlugin() {
 }
 
 export default defineConfig({
+  base: '/tiktok-uploader/',
   plugins: [assetListPlugin(), react()],
   publicDir: 'public',
 })
