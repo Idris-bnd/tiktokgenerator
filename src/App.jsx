@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { PHRASES_IMAGE_1, PHRASES_IMAGE_3, PENSEES_POSITIVES } from './data/phrases'
+import { PHRASES_IMAGE_1, PHRASES_IMAGE_3, PENSEES_POSITIVES, DESCRIPTIONS_TIKTOK } from './data/phrases'
 import { PHOTOS, LOCKSCREENS } from './config/images'
 import {
   generateImageWithText,
@@ -96,6 +96,17 @@ function MainApp() {
   const [downloading, setDownloading] = useState(false)
   const [preview, setPreview] = useState(null)
   const [genState, setGenState] = useState(null)
+  const [copiedField, setCopiedField] = useState(null)
+
+  const handleCopyDesc = async (text, lang) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopiedField(lang)
+      setTimeout(() => setCopiedField(null), 1500)
+    } catch {
+      alert('Copie échouée')
+    }
+  }
 
   async function buildPreviewFromState(state) {
     const photoUrl = getImageUrl('photos', state.photoFilename)
@@ -150,9 +161,10 @@ function MainApp() {
         const idx1 = getRandomIndex(PHRASES_IMAGE_1)
         const idx3 = getRandomIndex(PHRASES_IMAGE_3)
         const idxP = getRandomIndex(PENSEES_POSITIVES)
+        const idxDesc = getRandomIndex(DESCRIPTIONS_TIKTOK)
         const textPos = getTextPos()
 
-        const state = { photoFilename, lockscreenFilename, idx1, idx3, idxP, textPos }
+        const state = { photoFilename, lockscreenFilename, idx1, idx3, idxP, idxDesc, textPos }
         setGenState(state)
         const result = await buildPreviewFromState(state)
         setPreview(result)
@@ -293,6 +305,39 @@ function MainApp() {
               </div>
             </div>
           </section>
+        </div>
+      )}
+
+      {preview && genState?.idxDesc != null && DESCRIPTIONS_TIKTOK[genState.idxDesc] && (
+        <div className="desc-tiktok">
+          <h4 className="desc-title">Description TikTok</h4>
+          <div className="desc-fields">
+            <div className="desc-field-wrapper">
+              <label className="desc-label">
+                FR {copiedField === 'fr' && <span className="desc-copied">Copié !</span>}
+              </label>
+              <input
+                type="text"
+                className="desc-input"
+                value={getText(DESCRIPTIONS_TIKTOK[genState.idxDesc], 'fr')}
+                readOnly
+                onClick={(e) => handleCopyDesc(e.target.value, 'fr')}
+              />
+            </div>
+            <div className="desc-field-wrapper">
+              <label className="desc-label">
+                EN {copiedField === 'en' && <span className="desc-copied">Copié !</span>}
+              </label>
+              <input
+                type="text"
+                className="desc-input"
+                value={getText(DESCRIPTIONS_TIKTOK[genState.idxDesc], 'en')}
+                readOnly
+                onClick={(e) => handleCopyDesc(e.target.value, 'en')}
+              />
+            </div>
+          </div>
+          <p className="desc-hint">Clique pour copier dans le presse-papier</p>
         </div>
       )}
 

@@ -29,16 +29,6 @@ export const DESCRIPTIONS_TIKTOK = [
 ];
 
 // Pensées positives (à alimenter)
-// export const PENSEES_POSITIVES = [
-//   'Chaque petit pas compte vers tes objectifs.',
-//   'Tu as le pouvoir de choisir ta réaction.',
-//   'Le présent est le seul moment qui existe.',
-//   'Chaque jour offre une nouvelle chance.',
-//   'Tu es digne d\'amour et de bonheur.',
-// ];
-// export const PENSEES_POSITIVES = [
-//   'les changements commencent souvent invisiblement.',
-// ];
 
 export const PENSEES_POSITIVES = [
   {id:5556,text:"et si tu choisissais de croire en toi aujourd'hui, juste pour voir ?",en:"what if you chose to believe in yourself today, just to see?"},
