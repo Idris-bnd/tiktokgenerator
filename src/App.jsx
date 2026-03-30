@@ -6,19 +6,40 @@ import {
   generateLockscreenWithThought,
   generateZoomWithPhrase,
 } from './utils/imageGenerator'
-import { downloadToFolder } from './utils/download'
+import { downloadToFolder, shareThreeImages } from './utils/download'
 import './App.css'
 
 const PASSWORD_B64 = 'anVzdGV1bnRpa3Rvaw=='
+const LS_SAVED_PASSWORD_KEY = 'tiktok-uploader-saved-password'
 
 function LoginForm({ onSuccess }) {
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState(
+    () => (typeof localStorage !== 'undefined' ? localStorage.getItem(LS_SAVED_PASSWORD_KEY) || '' : ''),
+  )
   const [error, setError] = useState(false)
+
+  useEffect(() => {
+    const pwd = typeof localStorage !== 'undefined' ? localStorage.getItem(LS_SAVED_PASSWORD_KEY) || '' : ''
+    if (!pwd) return
+    if (btoa(pwd) === PASSWORD_B64) {
+      sessionStorage.setItem('tiktok-auth', '1')
+      onSuccess()
+    } else {
+      setError(true)
+    }
+    // Tentative unique au chargement à partir du stockage
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault()
     const encoded = btoa(password)
     if (encoded === PASSWORD_B64) {
+      try {
+        localStorage.setItem(LS_SAVED_PASSWORD_KEY, password)
+      } catch {
+        /* quota ou stockage désactivé */
+      }
       sessionStorage.setItem('tiktok-auth', '1')
       onSuccess()
     } else {
@@ -94,6 +115,7 @@ function ImageCarousel({ title, images, folder }) {
 function MainApp() {
   const [generating, setGenerating] = useState(false)
   const [downloading, setDownloading] = useState(false)
+  const [sharing, setSharing] = useState(null)
   const [preview, setPreview] = useState(null)
   const [genState, setGenState] = useState(null)
   const [copiedField, setCopiedField] = useState(null)
@@ -262,6 +284,35 @@ function MainApp() {
     }
   }
 
+  const handleShareTiktok = async (locale) => {
+    if (!preview) return
+    const caption =
+      genState?.idxDesc != null && DESCRIPTIONS_TIKTOK[genState.idxDesc]
+        ? getText(DESCRIPTIONS_TIKTOK[genState.idxDesc], locale)
+        : ''
+    setSharing(locale)
+    try {
+      const result = await shareThreeImages(preview, locale, { text: caption })
+      if (result.ok) return
+      if (result.aborted) return
+      if (result.reason === 'no-share-api') {
+        alert(
+          'Partage non pris en charge sur ce navigateur. Essaie Chrome sur Android, ou Safari sur iPhone (HTTPS ou localhost).',
+        )
+        return
+      }
+      if (result.reason === 'cannot-share-files') {
+        alert(
+          'Ce navigateur n’accepte pas le partage de plusieurs images d’un coup. Utilise « Télécharger » puis envoie les fichiers manuellement vers TikTok.',
+        )
+        return
+      }
+      alert(`Partage impossible : ${result.reason}`)
+    } finally {
+      setSharing(null)
+    }
+  }
+
   return (
     <div className="app">
       <header className="header">
@@ -337,7 +388,10 @@ function MainApp() {
               />
             </div>
           </div>
-          <p className="desc-hint">Clique pour copier dans le presse-papier</p>
+          <p className="desc-hint">
+            Clique pour copier dans le presse-papier. « Partager 3 images » ouvre le menu Partage : choisis TikTok
+            (souvent mieux sur téléphone).
+          </p>
         </div>
       )}
 
@@ -350,13 +404,31 @@ function MainApp() {
           {generating ? 'Génération...' : 'Générer un TikTok'}
         </button>
         {preview && (
-          <button
-            className="btn-download"
-            onClick={handleDownload}
-            disabled={downloading}
-          >
-            {downloading ? 'Téléchargement...' : 'Télécharger'}
-          </button>
+          <>
+            <button
+              className="btn-download"
+              onClick={handleDownload}
+              disabled={downloading}
+            >
+              {downloading ? 'Téléchargement...' : 'Télécharger'}
+            </button>
+            <button
+              className="btn-share-tiktok"
+              type="button"
+              onClick={() => handleShareTiktok('fr')}
+              disabled={generating || Boolean(sharing)}
+            >
+              {sharing === 'fr' ? 'Partage…' : 'Partager 3 images (FR)'}
+            </button>
+            <button
+              className="btn-share-tiktok btn-share-tiktok-en"
+              type="button"
+              onClick={() => handleShareTiktok('en')}
+              disabled={generating || Boolean(sharing)}
+            >
+              {sharing === 'en' ? 'Partage…' : 'Partager 3 images (EN)'}
+            </button>
+          </>
         )}
       </div>
 

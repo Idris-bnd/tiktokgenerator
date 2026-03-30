@@ -36,6 +36,45 @@ function downloadToGallery(preview) {
   return true
 }
 
+/**
+ * Partage système (menu Partage) : uniquement les 3 images d'une langue.
+ * Sur mobile, choisis TikTok dans la liste pour tenter un carrouel / import multi-images.
+ * @param {'fr'|'en'} locale
+ * @param {{ text?: string }} [options] — légende proposée à certaines apps (optionnel)
+ * @returns {{ ok: true } | { ok: false, reason: string } | { ok: false, aborted: true }}
+ */
+export async function shareThreeImages(preview, locale, options = {}) {
+  if (!navigator.share) {
+    return { ok: false, reason: 'no-share-api' }
+  }
+
+  const bundle = locale === 'en' ? preview.en : preview.fr
+  const prefix = locale === 'en' ? 'en' : 'fr'
+  const shareFiles = [
+    new File([dataURLtoBlob(bundle.image1)], `${prefix}-1.png`, { type: 'image/png' }),
+    new File([dataURLtoBlob(bundle.image2)], `${prefix}-2.png`, { type: 'image/png' }),
+    new File([dataURLtoBlob(bundle.image3)], `${prefix}-3.png`, { type: 'image/png' }),
+  ]
+
+  const payload = {
+    files: shareFiles,
+    title: `TikTok ${locale.toUpperCase()}`,
+  }
+  if (options.text) payload.text = options.text
+
+  if (navigator.canShare && !navigator.canShare(payload)) {
+    return { ok: false, reason: 'cannot-share-files' }
+  }
+
+  try {
+    await navigator.share(payload)
+    return { ok: true }
+  } catch (err) {
+    if (err.name === 'AbortError') return { ok: false, aborted: true }
+    return { ok: false, reason: err.message || 'share-error' }
+  }
+}
+
 export async function downloadToFolder(preview) {
   if (isMobile()) {
     try {

@@ -21,14 +21,10 @@ export const PHRASES_IMAGE_3 = [
 
 // Descriptions TikTok (avec hashtags)
 export const DESCRIPTIONS_TIKTOK = [
-  { text: 'Une dose de positif pour ta journée 💫 Pense à sauvegarder ! #penseespositives #motivation #positivite #devperso', en: 'A dose of positivity for your day 💫 Remember to save! #positivity #motivation #mindset #selfgrowth' },
-  { text: 'Cette pensée est pour toi ✨ Garde-la en tête ! #mindset #positif #quotidien #bienetre', en: 'This thought is for you ✨ Keep it in mind! #mindset #positive #daily #wellbeing' },
-  { text: 'Rappel du jour : tu es plus fort que tu ne crois 🌟 #motivation #inspiration #penseespositives #selflove', en: 'Daily reminder: you\'re stronger than you think 🌟 #motivation #inspiration #positivity #selflove' },
-  { text: 'Un petit rappel pour te faire sourire aujourd\'hui 💭 #positivite #bonheur #mindfulness #viepositive', en: 'A little reminder to make you smile today 💭 #positivity #happiness #mindfulness #positivelife' },
-  { text: 'Sauvegarde cette pensée pour les jours où tu en auras besoin ❤️ #penseespositives #resilience #mentalhealth', en: 'Save this thought for the days when you need it ❤️ #positivity #resilience #mentalhealth' },
+  { text: 'installe and if sur l\'app store ! #affirmations #penseepositive #motivation #andif', en: 'install and if on the app store ! #positivethoughts #affirmations #positivity #motivation #andif' },
+  { text: 'installe and if !! ❤️ #affirmations #penseepositive #motivation #andif', en: 'install and if !! ❤️ #positivethoughts #affirmations #positivity #motivation #andif' },
+  { text: 'and if dispo sur l\'app store :) #affirmations #penseepositive #motivation #andif', en: 'and if available on the app store :) #positivethoughts #affirmations #positivity #motivation #andif' },
 ];
-
-// Pensées positives (à alimenter)
 
 export const PENSEES_POSITIVES = [
   {id:5556,text:"et si tu choisissais de croire en toi aujourd'hui, juste pour voir ?",en:"what if you chose to believe in yourself today, just to see?"},

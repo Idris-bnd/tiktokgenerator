@@ -61,7 +61,7 @@
 .app {
   min-height: 100vh;
   padding: 2rem;
-  padding-bottom: 140px;
+  padding-bottom: 260px;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -332,6 +332,39 @@
   cursor: not-allowed;
 }
 
+.btn-share-tiktok {
+  padding: 0.875rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  color: #69c9d0;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.btn-share-tiktok-en {
+  color: #ee1d52;
+}
+
+.btn-share-tiktok:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(105, 201, 208, 0.2);
+  border-color: rgba(105, 201, 208, 0.4);
+}
+
+.btn-share-tiktok-en:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(238, 29, 82, 0.25);
+  border-color: rgba(238, 29, 82, 0.35);
+}
+
+.btn-share-tiktok:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 /* Descriptions TikTok */
 .desc-tiktok {
   margin: 2rem 0 0;
@@ -464,6 +497,9 @@
 @media (min-width: 768px) {
   .app-buttons {
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: min(520px, 92vw);
     bottom: auto;
     top: 1.5rem;
     right: 1.5rem;
