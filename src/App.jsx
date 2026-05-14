@@ -306,6 +306,13 @@ function MainApp() {
       genState?.idxDesc != null && DESCRIPTIONS_TIKTOK[genState.idxDesc]
         ? getText(DESCRIPTIONS_TIKTOK[genState.idxDesc], locale)
         : ''
+    if (caption) {
+      try {
+        await navigator.clipboard.writeText(caption)
+      } catch {
+        /* presse-papiers indisponible */
+      }
+    }
     setSharing(locale)
     try {
       const result = await shareThreeImages(preview, locale, { text: caption })
