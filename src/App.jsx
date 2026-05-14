@@ -272,10 +272,26 @@ function MainApp() {
 
   const handleDownload = async () => {
     if (!preview) return
+    if (genState?.idxDesc != null && DESCRIPTIONS_TIKTOK[genState.idxDesc]) {
+      const descFr = getText(DESCRIPTIONS_TIKTOK[genState.idxDesc], 'fr')
+      try {
+        await navigator.clipboard.writeText(descFr)
+      } catch {
+        /* presse-papiers indisponible (HTTP non sécurisé, etc.) */
+      }
+    }
     setDownloading(true)
     try {
       const success = await downloadToFolder(preview)
-      if (success) alert('Téléchargement terminé !')
+      if (success) {
+        const hadDesc =
+          genState?.idxDesc != null && DESCRIPTIONS_TIKTOK[genState.idxDesc]
+        alert(
+          hadDesc
+            ? 'Téléchargement terminé ! La description FR a été copiée dans le presse-papiers.'
+            : 'Téléchargement terminé !',
+        )
+      }
     } catch (err) {
       console.error(err)
       alert('Erreur lors du téléchargement.')
