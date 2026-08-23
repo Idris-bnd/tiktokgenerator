@@ -533,6 +533,8 @@ function Generate() {
 
 function App() {
   const path = window.location.pathname
+  console.log(path);
+  
   if (path === '/generate') {
     return <Generate />
   }
