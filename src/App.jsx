@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import { PHRASES_IMAGE_1, PHRASES_IMAGE_3, PENSEES_POSITIVES, DESCRIPTIONS_TIKTOK } from './data/phrases'
 import { PHOTOS, LOCKSCREENS } from './config/images'
 import {
@@ -113,6 +114,13 @@ function ImageCarousel({ title, images, folder }) {
 }
 
 function MainApp() {
+  
+  const [auth, setAuth] = useState(() => sessionStorage.getItem('tiktok-auth') === '1')
+  if (!auth) {
+    return <LoginForm onSuccess={() => setAuth(true)} />
+  }
+
+
   const [generating, setGenerating] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [sharing, setSharing] = useState(null)
@@ -532,19 +540,13 @@ function Generate() {
 
 
 function App() {
-  const path = window.location.pathname
-  console.log(path);
-  
-  if (path === '/generate') {
-    return <Generate />
-  }
 
-  const [auth, setAuth] = useState(() => sessionStorage.getItem('tiktok-auth') === '1')
-  if (!auth) {
-    return <LoginForm onSuccess={() => setAuth(true)} />
-  }
-
-  return <MainApp />
+  return(
+    <Routes>
+      <Route path="/" element={<MainApp />} />
+      <Route path="/generate" element={<Generate />} />
+    </Routes>
+  )
 }
 
 export default App
