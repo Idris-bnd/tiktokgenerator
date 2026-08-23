@@ -117,11 +117,6 @@ function ImageCarousel({ title, images, folder }) {
 }
 
 function MainApp() {
-  
-  const [auth, setAuth] = useState(() => sessionStorage.getItem('tiktok-auth') === '1')
-  if (!auth) {
-    return <LoginForm onSuccess={() => setAuth(true)} />
-  }
 
 
   const [generating, setGenerating] = useState(false)
@@ -543,13 +538,12 @@ function Generate() {
 
 
 function App() {
+  const [auth, setAuth] = useState(() => sessionStorage.getItem('tiktok-auth') === '1')
+  if (!auth) {
+    return <LoginForm onSuccess={() => setAuth(true)} />
+  }
 
-  return(
-    <Routes>
-      <Route path="/" element={<MainApp />} />
-      <Route path="/generate" element={<Generate />} />
-    </Routes>
-  )
+  return <MainApp/>
 }
 
 export default App
