@@ -436,6 +436,24 @@
   margin-top: 0.5rem;
 }
 
+.share-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 1rem 0 0;
+  padding: 1rem 1.25rem;
+  background: rgba(105, 201, 208, 0.08);
+  border: 1px solid rgba(105, 201, 208, 0.2);
+  border-radius: 12px;
+}
+
+.share-note code {
+  font-size: 0.85em;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
 @media (min-width: 768px) {
   .desc-fields {
     flex-direction: row;

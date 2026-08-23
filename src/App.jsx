@@ -412,10 +412,18 @@ function MainApp() {
             </div>
           </div>
           <p className="desc-hint">
-            Clique pour copier dans le presse-papier. « Partager 3 images » ouvre le menu Partage : choisis TikTok
-            (souvent mieux sur téléphone).
+            Clique sur un champ pour copier la description. « Partager 3 images » ouvre le menu Partage : Instagram
+            et d’autres apps y figurent souvent ; TikTok y est rarement (limitation de l’app TikTok, pas du site).
           </p>
         </div>
+      )}
+
+      {preview && (
+        <p className="share-note">
+          Pour TikTok : « Télécharger » enregistre les 6 images ; ouvre TikTok → Créer → importe les fichiers{' '}
+          <code>fr-1</code> à <code>fr-3</code> (ou <code>en-*</code>) depuis ta galerie. La description FR est copiée
+          au clic sur Télécharger ; FR ou EN au clic sur Partager.
+        </p>
       )}
 
       <div className="app-buttons">
@@ -508,9 +516,28 @@ function MainApp() {
   )
 }
 
-function App() {
-  const [auth, setAuth] = useState(() => sessionStorage.getItem('tiktok-auth') === '1')
+function Generate() {
+  const [content, setContent] = useState('')
 
+  useEffect(() => {
+    fetch('/tiktokZYiDMBehJag0OLyCBgoNmQ842S8F1FXH.txt')
+      .then((res) => res.text())
+      .then(setContent)
+  }, [])
+
+  return (
+    <pre>{content}</pre>
+  )
+}
+
+
+function App() {
+  const path = window.location.pathname
+  if (path === '/generate') {
+    return <Generate />
+  }
+
+  const [auth, setAuth] = useState(() => sessionStorage.getItem('tiktok-auth') === '1')
   if (!auth) {
     return <LoginForm onSuccess={() => setAuth(true)} />
   }
