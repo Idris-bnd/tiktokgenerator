@@ -54,13 +54,16 @@ function LoginForm({ onSuccess }) {
       <p className="login-subtitle">Entrez le mot de passe pour accéder</p>
       <form onSubmit={handleSubmit}>
         <input
+          id='login_pass'
           type="password"
           value={password}
           onChange={(e) => { setPassword(e.target.value); setError(false) }}
           placeholder="Mot de passe"
           autoFocus
         />
-        <button type="submit">Accéder</button>
+        <button
+          id='login_submit'
+          type="submit">Accéder</button>
       </form>
       {error && <p className="login-error">Mot de passe incorrect</p>}
     </div>
