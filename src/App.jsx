@@ -291,11 +291,7 @@ function MainApp() {
       if (success) {
         const hadDesc =
           genState?.idxDesc != null && DESCRIPTIONS_TIKTOK[genState.idxDesc]
-        alert(
-          hadDesc
-            ? 'Téléchargement terminé ! La description FR a été copiée dans le presse-papiers.'
-            : 'Téléchargement terminé !',
-        )
+        
       }
     } catch (err) {
       console.error(err)
