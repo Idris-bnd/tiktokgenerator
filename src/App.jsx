@@ -396,7 +396,7 @@ function MainApp() {
                 className="desc-input"
                 value={getText(DESCRIPTIONS_TIKTOK[genState.idxDesc], 'fr')}
                 readOnly
-                onClick={(e) => handleCopyDesc(DESCRIPTIONS_TIKTOK[genState.idxDesc], 'fr')}
+                onClick={(e) => handleCopyDesc(e.target.value, 'fr')}
               />
             </div>
             <div className="desc-field-wrapper">
@@ -408,7 +408,7 @@ function MainApp() {
                 className="desc-input"
                 value={getText(DESCRIPTIONS_TIKTOK[genState.idxDesc], 'en')}
                 readOnly
-                onClick={(e) => handleCopyDesc(DESCRIPTIONS_TIKTOK[genState.idxDesc], 'en')}
+                onClick={(e) => handleCopyDesc(e.target.value, 'en')}
               />
             </div>
           </div>
