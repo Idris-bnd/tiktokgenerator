@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
 import { PHRASES_IMAGE_1, PHRASES_IMAGE_3, PENSEES_POSITIVES, DESCRIPTIONS_TIKTOK } from './data/phrases'
 import { PHOTOS, LOCKSCREENS } from './config/images'
 import {
@@ -521,21 +520,6 @@ function MainApp() {
     </div>
   )
 }
-
-function Generate() {
-  const [content, setContent] = useState('')
-
-  useEffect(() => {
-    fetch('/tiktokZYiDMBehJag0OLyCBgoNmQ842S8F1FXH.txt')
-      .then((res) => res.text())
-      .then(setContent)
-  }, [])
-
-  return (
-    <pre>{content}</pre>
-  )
-}
-
 
 function App() {
   const [auth, setAuth] = useState(() => sessionStorage.getItem('tiktok-auth') === '1')

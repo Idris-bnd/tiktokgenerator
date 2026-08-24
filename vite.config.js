@@ -37,6 +37,16 @@ function assetListPlugin() {
       }
     },
     configureServer(server) {
+      const verifyBody = 'tiktok-developers-site-verification=pmCitDjwqNPcmpanTahVhONCPbiaKpae'
+      server.middlewares.use((req, res, next) => {
+        const path = (req.url || '').split('?')[0]
+        if (path === '/verify' || path === '/verify.txt') {
+          res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+          res.end(verifyBody)
+          return
+        }
+        next()
+      })
       server.watcher.add(assetsPath)
       server.watcher.on('all', (event, filePath) => {
         const inAssets = filePath.replace(/\\/g, '/').includes('/public/assets/')
