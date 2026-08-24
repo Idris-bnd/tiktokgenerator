@@ -37,7 +37,7 @@ function assetListPlugin() {
       }
     },
     configureServer(server) {
-      const verifyBody = 'tiktok-developers-site-verification=pmCitDjwqNPcmpanTahVhONCPbiaKpae'
+      const verifyBody = 'tiktok-developers-site-verification=4DBI7HL7qPNlFwj6xHGclsXsvg7XDpJV'
       server.middlewares.use((req, res, next) => {
         const path = (req.url || '').split('?')[0]
         if (path === '/verify' || path === '/verify.txt') {
